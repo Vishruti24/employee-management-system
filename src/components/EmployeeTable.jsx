@@ -4,21 +4,21 @@ import StatusToggle from "./StatusToggle";
 import { useEmployees } from "../context/EmployeeContext";
 
 
-export default function EmployeeTable({ employees, onDelete }) {
-
-const { toggleStatus } = useEmployees();
-
+export default function EmployeeTable({ employees, onDelete, onEdit }) {
+  const { toggleStatus } = useEmployees();
 
   return (
     <table className="w-full bg-white rounded shadow">
       <thead>
-        <tr className="text-left border-b">
-          <th className="p-3">Name</th>
+        <tr className="text-center text-white bg-zinc-600 border-b">
+          <th className="p-4">Name</th>
           <th>Email</th>
+          <th>Department</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
+
       <tbody>
         {employees.map(emp => (
           <tr key={emp.id} className="border-t text-center">
@@ -33,16 +33,16 @@ const { toggleStatus } = useEmployees();
               />
             </td>
 
-            <td className="flex gap-3">
+            <td className="flex gap-3 justify-center">
               <Link to={`/profile/${emp.id}`}>
-                <Eye size={18} className="text-blue-600" />
+                <Eye size={20} className="text-purple-900" />
               </Link>
-<button
-  onClick={() => setEditEmp(emp)}>
-  <Pencil size={16} className="text-blue-600" />
-</button>
-              <button
-                onClick={() => onDelete(emp.id)}>
+
+              <button onClick={() => onEdit(emp)}>
+                <Pencil size={18} className="text-blue-600" />
+              </button>
+
+              <button onClick={() => onDelete(emp.id)}>
                 <Trash2 size={18} className="text-red-600" />
               </button>
             </td>
@@ -50,7 +50,6 @@ const { toggleStatus } = useEmployees();
         ))}
       </tbody>
     </table>
-
-
   );
 }
+

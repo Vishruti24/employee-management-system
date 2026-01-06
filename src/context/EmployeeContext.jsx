@@ -9,9 +9,13 @@ export const EmployeeProvider = ({ children }) => {
   const addEmployee = (emp) =>
     setEmployees([...employees, { ...emp, id: Date.now() }]);
 
-  const updateEmployee = (id, updated) =>
-    setEmployees(employees.map(e => e.id === id ? updated : e));
-
+  const updateEmployee = (updatedEmp) => {
+    setEmployees(
+      employees.map(emp =>
+        emp.id === updatedEmp.id ? updatedEmp : emp
+      )
+    );
+  };
   const deleteEmployee = (id) =>
     setEmployees(employees.filter(e => e.id !== id));
 

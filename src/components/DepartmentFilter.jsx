@@ -1,7 +1,7 @@
 export default function DepartmentFilter({ value, onChange }) {
   return (
     <select
-      className="border p-2 rounded"
+      className="border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
