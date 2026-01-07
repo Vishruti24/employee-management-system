@@ -9,37 +9,45 @@ export const EmployeeProvider = ({ children }) => {
   const addEmployee = (emp) =>
     setEmployees([...employees, { ...emp, id: Date.now() }]);
 
-  const updateEmployee = (updatedEmp) => {
+  const updateEmployee = (id, updated) => {
     setEmployees(
-      employees.map(emp =>
-        emp.id === updatedEmp.id ? updatedEmp : emp
+      employees.map((emp) =>
+        emp.id === id
+          ? {
+              ...updated,
+              status: updated.endDate ? "Inactive" : "Active",
+            }
+          : emp
       )
     );
   };
-  const deleteEmployee = (id) =>
-    setEmployees(employees.filter(e => e.id !== id));
 
-  const toggleStatus = id => {
-  setEmployees(
-    employees.map(emp =>
-      emp.id === id
-        ? {
-            ...emp,
-            status: emp.status === "Active" ? "Inactive" : "Active",
-          }
-        : emp
-    )
-  );
-};
+  const deleteEmployee = (id) =>
+    setEmployees(employees.filter((e) => e.id !== id));
+
+  const toggleStatus = (id) => {
+    setEmployees(
+      employees.map((emp) =>
+        emp.id === id
+          ? {
+              ...emp,
+              status: emp.status === "Active" ? "Inactive" : "Active",
+            }
+          : emp
+      )
+    );
+  };
 
   return (
-    <EmployeeContext.Provider value={{
-      employees,
-      addEmployee,
-      updateEmployee,
-      deleteEmployee,
-      toggleStatus
-    }}>
+    <EmployeeContext.Provider
+      value={{
+        employees,
+        addEmployee,
+        updateEmployee,
+        deleteEmployee,
+        toggleStatus,
+      }}
+    >
       {children}
     </EmployeeContext.Provider>
   );

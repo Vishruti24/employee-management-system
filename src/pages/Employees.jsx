@@ -15,38 +15,38 @@ export default function Employees() {
   const [open, setOpen] = useState(false);
   const [editEmp, setEditEmp] = useState(null);
   const [sortBy, setSortBy] = useState("");
-
-
-  // const filteredEmployees = employees.filter(emp =>
-  //   emp.name.toLowerCase().includes(search.toLowerCase()) &&
-  //   (dept ? emp.department === dept : true)
-  // );
-
+  const [alert, setAlert] = useState(null);
 
   const filteredEmployees = employees
-  .filter(emp =>
-    emp.name.toLowerCase().includes(search.toLowerCase()) &&
-    (dept ? emp.department === dept : true)
-  )
-  .sort((a, b) => {
-    if (sortBy === "name-asc") {
-      return a.name.localeCompare(b.name);
-    }
-    if (sortBy === "name-desc") {
-      return b.name.localeCompare(a.name);
-    }
-    if (sortBy === "status") {
-      return a.status === "Active" ? -1 : 1;
-    }
-    return 0;
-  });
- 
+    .filter(
+      (emp) =>
+        emp.name.toLowerCase().includes(search.toLowerCase()) &&
+        (dept ? emp.department === dept : true)
+    )
+    .sort((a, b) => {
+      if (sortBy === "name-asc") {
+        return a.name.localeCompare(b.name);
+      }
+      if (sortBy === "name-desc") {
+        return b.name.localeCompare(a.name);
+      }
+      if (sortBy === "status") {
+        return a.status === "Active" ? -1 : 1;
+      }
+      return 0;
+    });
 
   const handleEdit = (emp) => {
     setEditEmp(emp);
     setOpen(true);
   };
 
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure?")) {
+      deleteEmployee(id);
+      setAlert({ type: "success", message: "Employee deleted" });
+    }
+  };
 
   return (
     <div>
@@ -73,19 +73,20 @@ export default function Employees() {
       </div>
 
       {/* Table */}
-      <EmployeeTable
-        employees={filteredEmployees}
-        onDelete={deleteEmployee}
-        onEdit={handleEdit}
-      />
+      {filteredEmployees.length === 0 ? (
+        <p className="text-gray-500 mt-6 text-center">No employees found</p>
+      ) : (
+        <EmployeeTable
+          employees={filteredEmployees}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
+      )}
 
       {/* Modal */}
       {open && (
         <Modal onClose={() => setOpen(false)}>
-          <EmployeeForm
-            employee={editEmp}
-            onClose={() => setOpen(false)}
-          />
+          <EmployeeForm employee={editEmp} onClose={() => setOpen(false)} />
         </Modal>
       )}
     </div>

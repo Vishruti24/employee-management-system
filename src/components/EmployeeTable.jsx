@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import StatusToggle from "./StatusToggle";
 import { useEmployees } from "../context/EmployeeContext";
 
-
 export default function EmployeeTable({ employees, onDelete, onEdit }) {
   const { toggleStatus } = useEmployees();
 
@@ -20,7 +19,7 @@ export default function EmployeeTable({ employees, onDelete, onEdit }) {
       </thead>
 
       <tbody>
-        {employees.map(emp => (
+        {employees.map((emp) => (
           <tr key={emp.id} className="border-t text-center">
             <td className="p-3">{emp.name}</td>
             <td>{emp.email}</td>
@@ -52,4 +51,3 @@ export default function EmployeeTable({ employees, onDelete, onEdit }) {
     </table>
   );
 }
-

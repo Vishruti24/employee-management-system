@@ -9,8 +9,8 @@ export default function DepartmentFilter({ value, onChange }) {
       <option value="HR">HR</option>
       <option value="IT">IT</option>
       <option value="Finance">Finance</option>
-       <option value="Marketing">Marketing</option>
-        <option value="BDE">BDE</option>
+      <option value="Marketing">Marketing</option>
+      <option value="BDE">BDE</option>
     </select>
   );
 }

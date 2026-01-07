@@ -1,76 +1,60 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEmployees } from "../context/EmployeeContext";
+import { useState } from "react";
 import Modal from "../components/Modal";
 import EmployeeForm from "../components/EmployeeForm";
-//import Loader from "../components/Loader";
-import { useState } from "react";
-import StatusToggle from "../components/StatusToggle.jsx";
+import StatusToggle from "../components/StatusToggle";
 
 export default function Profile() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { employees } = useEmployees();
   const [openEdit, setOpenEdit] = useState(false);
 
-  const employee = employees.find(emp => emp.id === Number(id));
+  const employee = employees.find((emp) => emp.id === Number(id));
 
- 
-  // if (!employees.length) return <Loader />;
-
- 
   if (!employee) {
-    return (
-      <div className="flex justify-center items-center h-96 text-gray-500">
-        Employee not found
-      </div>
-    );
+    return <p className="text-center mt-20">Employee not found</p>;
   }
 
   return (
     <div className="p-6">
-      <div className="max-w-3xl bg-white rounded-lg shadow p-6">
+      <button
+        onClick={() => navigate("/employees")}
+        className="text-blue-600 mb-4"
+      >
+        ← Back to Employees
+      </button>
 
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Avatar */}
-            <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-xl font-bold">
-              {employee.name.charAt(0)}
-            </div>
-
-            {/* Name + Status */}
-            <div>
-              <h2 className="text-xl font-semibold">{employee.name}</h2>
-              <StatusToggle status={employee.status}/>
-            </div>
+      <div className="max-w-3xl bg-white p-6 rounded shadow">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-semibold">{employee.name}</h2>
+            <StatusToggle status={employee.status} />
           </div>
-
-          {/* Edit Button */}
           <button
             onClick={() => setOpenEdit(true)}
             className="bg-blue-600 text-white px-4 py-2 rounded"
           >
-            Edit Profile
+            Edit
           </button>
         </div>
 
-        {/* Info Section */}
-        <div className="mt-6 space-y-3 text-gray-700">
-          <p><b>Email:</b> {employee.email}</p>
-          <p><b>Department:</b> {employee.department}</p>
-          <p><b>Role:</b> {employee.role}</p>
+        <div className="mt-4 space-y-2">
+          <p>Email: {employee.email}</p>
+          <p>Department: {employee.department}</p>
+          <p>Role: {employee.role}</p>
         </div>
       </div>
 
-      {/* Edit Modal */}
       {openEdit && (
         <Modal onClose={() => setOpenEdit(false)}>
           <EmployeeForm
             employee={employee}
-            closeModal={() => setOpenEdit(false)}
+            onClose={() => setOpenEdit(false)}
           />
         </Modal>
       )}
     </div>
   );
 }
-
