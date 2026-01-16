@@ -77,6 +77,7 @@ export default function EmployeeForm({ employee, onClose }) {
 
       <input
         type="date"
+        placeholder="JoinDate"
         value={form.joiningDate}
         onChange={(e) => setForm({ ...form, joiningDate: e.target.value })}
         required
@@ -84,6 +85,7 @@ export default function EmployeeForm({ employee, onClose }) {
 
       <input
         type="date"
+        placeholder="EndDate"
         value={form.endDate}
         onChange={(e) => setForm({ ...form, endDate: e.target.value })}
       />

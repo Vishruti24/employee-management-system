@@ -6,6 +6,8 @@ import DepartmentFilter from "../components/DepartmentFilter";
 import EmployeeSort from "../components/EmployeeSort";
 import EmployeeForm from "../components/EmployeeForm";
 import Modal from "../components/Modal";
+import EmployeeCard from "../components/EmployeeCard";
+
 
 export default function Employees() {
   const { employees, deleteEmployee } = useEmployees();
@@ -73,7 +75,7 @@ export default function Employees() {
       </div>
 
       {/* Table */}
-      {filteredEmployees.length === 0 ? (
+      {/* {filteredEmployees.length === 0 ? (
         <p className="text-gray-500 mt-6 text-center">No employees found</p>
       ) : (
         <EmployeeTable
@@ -81,7 +83,37 @@ export default function Employees() {
           onDelete={handleDelete}
           onEdit={handleEdit}
         />
-      )}
+      )} */}
+
+      {/* Responsive */}
+      {/* Desktop */}
+      {filteredEmployees.length === 0 ? (
+        <p className="text-gray-500 mt-6 text-center">No employees found</p>
+      ) : (
+     <div className="hidden md:block">
+          <EmployeeTable
+           employees={filteredEmployees}
+           onDelete={handleDelete}
+           onEdit={handleEdit}
+         />
+     </div>
+    )}
+    {/* Mobile */}
+      {filteredEmployees.length === 0 ? (
+        <p className="text-gray-500 mt-6 text-center">No employees found</p>
+      ) : (
+      <div className="grid gap-4 md:hidden">
+      {filteredEmployees.map(emp => (
+      <EmployeeCard
+      key={emp.id}
+      emp={emp}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+     />
+    ))}
+    </div>
+    )}
+
 
       {/* Modal */}
       {open && (
