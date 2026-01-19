@@ -1,160 +1,18 @@
-// import { useState } from "react";
-// import { useEmployees } from "../context/EmployeeContext";
-// //import EmployeeTable from "../components/EmployeeTable";
-// import EmployeeSearch from "../components/EmployeeSearch";
-// import DepartmentFilter from "../components/DepartmentFilter";
-// //import EmployeeSort from "../components/EmployeeSort";
-// import EmployeeForm from "../components/EmployeeForm";
-// import Modal from "../components/Modal";
-// import EmployeeCard from "../components/EmployeeCard";
-// import EmployeeDataGrid from "../components/EmployeeDataGrid";  
-
-
-// export default function Employees() {
-//   const { employees, deleteEmployee } = useEmployees();
-
-//   const [search, setSearch] = useState("");
-//   const [dept, setDept] = useState("");
-//   const [open, setOpen] = useState(false);
-//   const [editEmp, setEditEmp] = useState(null);
-//   // const [sortBy, setSortBy] = useState("");
-//   const [alert, setAlert] = useState(null);
-
-//   const filteredEmployees = employees
-//     .filter(
-//       (emp) =>
-//         emp.name.toLowerCase().includes(search.toLowerCase()) &&
-//         (dept ? emp.department === dept : true)
-//     )
-//     // .sort((a, b) => {
-//     //   if (sortBy === "name-asc") {
-//     //     return a.name.localeCompare(b.name);
-//     //   }
-//     //   if (sortBy === "name-desc") {
-//     //     return b.name.localeCompare(a.name);
-//     //   }
-//     //   if (sortBy === "status") {
-//     //     return a.status === "Active" ? -1 : 1;
-//     //   }
-//     //   return 0;
-//     // });
-
-//   const handleEdit = (emp) => {
-//     setEditEmp(emp);
-//     setOpen(true);
-//   };
-
-//   const handleDelete = (id) => {
-//     if (window.confirm("Are you sure?")) {
-//       deleteEmployee(id);
-//       setAlert({ type: "success", message: "Employee deleted" });
-//     }
-//   };
-
-//   return (
-//     <div>
-//       {/* Header */}
-//       <div className="flex justify-between items-center mb-4">
-//         <h2 className="text-2xl font-semibold">Employees</h2>
-
-//         <button
-//           onClick={() => {
-//             setEditEmp(null);
-//             setOpen(true);
-//           }}
-//           className="bg-gray-600 text-white px-4 py-2 rounded"
-//         >
-//           Add Employee
-//         </button>
-//       </div>
-
-//       {/* Search & Filter */}
-//       <div className="flex gap-8 mb-4">
-//         <EmployeeSearch value={search} onChange={setSearch} />
-//         <DepartmentFilter value={dept} onChange={setDept} />
-//         <EmployeeSort value={sortBy} onChange={setSortBy} />
-//       </div>
-
-//       {/* Table */}
-//       {/* {filteredEmployees.length === 0 ? (
-//         <p className="text-gray-500 mt-6 text-center">No employees found</p>
-//       ) : (
-//         <EmployeeTable
-//           employees={filteredEmployees}
-//           onDelete={handleDelete}
-//           onEdit={handleEdit}
-//         />
-//       )} */}
-//       {/* Responsive */}
-//       {/* Desktop */}
-//       {filteredEmployees.length === 0 ? (
-//         <p className="text-gray-500 mt-6 text-center">No employees found</p>
-//       ) : (
-//      <div className="hidden md:block">
-//          <EmployeeDataGrid
-//   employees={filteredEmployees}
-//   onDelete={handleDelete}
-//   onEdit={handleEdit}
-// />
-
-//      </div>
-//     )}
-//     {/* Mobile */}
-//       {filteredEmployees.length === 0 ? (
-//         <p className="text-gray-500 mt-6 text-center">No employees found</p>
-//       ) : (
-//       <div className="grid gap-4 md:hidden">
-//       {filteredEmployees.map(emp => (
-//       <EmployeeCard
-//       key={emp.id}
-//       emp={emp}
-//       onEdit={handleEdit}
-//       onDelete={handleDelete}
-//      />
-//     ))}
-//     </div>
-//     )}
-
-
-//       {/* Modal */}
-//       {open && (
-//         <Modal onClose={() => setOpen(false)}>
-//           <EmployeeForm employee={editEmp} onClose={() => setOpen(false)} />
-//         </Modal>
-//       )}
-//     </div>
-//   );
-// }
-
-
 import { useState } from "react";
 import { useEmployees } from "../context/EmployeeContext";
-import EmployeeSearch from "../components/EmployeeSearch";
-import DepartmentFilter from "../components/DepartmentFilter";
 import EmployeeForm from "../components/EmployeeForm";
 import Modal from "../components/Modal";
 import EmployeeCard from "../components/EmployeeCard";
 import EmployeeDataGrid from "../components/EmployeeDataGrid";
 import Alert from "../components/Alert";
 
-
-
 export default function Employees() {
   const { employees, deleteEmployee, toggleStatus } = useEmployees();
 
-  const [search, setSearch] = useState("");
-  const [dept, setDept] = useState("");
   const [open, setOpen] = useState(false);
   const [editEmp, setEditEmp] = useState(null);
   const [alert, setAlert] = useState(null);
 
-  // Filter employees
-  const filteredEmployees = employees.filter(
-    (emp) =>
-      emp.name.toLowerCase().includes(search.toLowerCase()) &&
-      (dept ? emp.department === dept : true)
-  )
- 
   const handleEdit = (emp) => {
     setEditEmp(emp);
     setOpen(true);
@@ -163,17 +21,17 @@ export default function Employees() {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure?")) {
       deleteEmployee(id);
-      setAlert({ type: "success", message: "Employee deleted" });
+      setAlert({ type: "success", message: "Employee deleted successfully" });
     }
   };
 
   return (
     <div>
       {alert && <Alert {...alert} />}
-
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Employees</h2>
+
         <button
           onClick={() => {
             setEditEmp(null);
@@ -185,21 +43,14 @@ export default function Employees() {
         </button>
       </div>
 
-      {/* Search & Filter */}
-      <div className="flex gap-6 mb-4">
-        <EmployeeSearch value={search} onChange={setSearch} />
-        <DepartmentFilter value={dept} onChange={setDept} />
-      </div>
-
-      {/* Desktop DataGrid */}
+      {/* Responsive */}
+      {/* Desktop */}
       <div className="hidden md:block">
-        {filteredEmployees.length === 0 ? (
-          <p className="text-gray-500 mt-6 text-center">
-            No employees found
-          </p>
+        {employees.length === 0 ? (
+          <p className="text-gray-500 text-center mt-6">No employees found</p>
         ) : (
           <EmployeeDataGrid
-            employees={filteredEmployees}
+            employees={employees}
             onEdit={handleEdit}
             onDelete={handleDelete}
             toggleStatus={toggleStatus}
@@ -207,14 +58,12 @@ export default function Employees() {
         )}
       </div>
 
-      {/* Mobile Cards */}
+      {/* Mobile */}
       <div className="grid gap-4 md:hidden">
-        {filteredEmployees.length === 0 ? (
-          <p className="text-gray-500 mt-6 text-center">
-            No employees found
-          </p>
+        {employees.length === 0 ? (
+          <p className="text-gray-500 text-center mt-6">No employees found</p>
         ) : (
-          filteredEmployees.map((emp) => (
+          employees.map((emp) => (
             <EmployeeCard
               key={emp.id}
               emp={emp}
@@ -228,10 +77,7 @@ export default function Employees() {
       {/* Modal */}
       {open && (
         <Modal onClose={() => setOpen(false)}>
-          <EmployeeForm
-            employee={editEmp}
-            onClose={() => setOpen(false)}
-          />
+          <EmployeeForm employee={editEmp} onClose={() => setOpen(false)} />
         </Modal>
       )}
     </div>
