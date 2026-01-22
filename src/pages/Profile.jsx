@@ -8,43 +8,37 @@ import StatusToggle from "../components/StatusToggle";
 export default function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { employees } = useEmployees();
+  const { employees, toggleStatus } = useEmployees();
   const [openEdit, setOpenEdit] = useState(false);
 
-  const employee = employees.find((emp) => emp.id === Number(id));
+  const employee = employees.find(
+    (e) => String(e.id) === String(id)
+  );
 
-  if (!employee) {
-    return <p className="text-center mt-20">Employee not found</p>;
-  }
+  if (!employee) return <p>Employee not found</p>;
 
   return (
     <div className="p-6">
-      <button
-        onClick={() => navigate("/employees")}
-        className="text-blue-600 mb-4"
-      >
-        ← Back to Employees
-      </button>
+      <button onClick={() => navigate("/employees")}>← Back to Employee</button>
 
-      <div className="max-w-3xl bg-white p-6 rounded shadow">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold">{employee.name}</h2>
-            <StatusToggle status={employee.status} />
-          </div>
-          <button
-            onClick={() => setOpenEdit(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Edit
-          </button>
-        </div>
+      <div className="bg-white p-6 rounded shadow mt-4">
+        <h2 className="text-xl font-semibold">{employee.name}</h2>
 
-        <div className="mt-4 space-y-2">
-          <p>Email: {employee.email}</p>
-          <p>Department: {employee.department}</p>
-          <p>Role: {employee.role}</p>
-        </div>
+        <StatusToggle
+          status={employee.status}
+          onToggle={() => toggleStatus(employee.id)}
+        />
+
+        <p>Email: {employee.email}</p>
+        <p>Department: {employee.department}</p>
+        <p>Role: {employee.role}</p>
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded mt-4"
+          onClick={() => setOpenEdit(true)}
+        >
+          Edit
+        </button>
       </div>
 
       {openEdit && (

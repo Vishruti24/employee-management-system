@@ -7,7 +7,7 @@ export default function EmployeeCard({ emp, onEdit, onDelete }) {
     <div className="bg-white p-4 rounded shadow space-y-2">
       <div className="flex justify-between items-center">
         <h3 className="font-semibold">{emp.name}</h3>
-        <StatusToggle status={emp.status} />
+        <StatusToggle status={emp.status} onToggle={()=>toggleStatus(emp.id)} />
       </div>
 
       <p className="text-sm text-gray-600">{emp.email}</p>

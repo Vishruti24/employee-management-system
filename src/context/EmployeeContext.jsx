@@ -1,42 +1,68 @@
-import { createContext, useContext } from "react";
-import useLocalStorage from "../hooks/useLocalStorage";
+import { createContext, useContext, useEffect, useState } from "react";
 
+const API_URL = "https://696e0052d7bacd2dd71557cd.mockapi.io/employees";
 const EmployeeContext = createContext();
 
 export const EmployeeProvider = ({ children }) => {
-  const [employees, setEmployees] = useLocalStorage("employees", []);
+  const [employees, setEmployees] = useState([]);
 
-  const addEmployee = (emp) =>
-    setEmployees([...employees, { ...emp, id: Date.now() }]);
-
-  const updateEmployee = (id, updated) => {
-    setEmployees(
-      employees.map((emp) =>
-        emp.id === id
-          ? {
-              ...updated,
-              status: updated.endDate ? "Inactive" : "Active",
-            }
-          : emp
-      )
-    );
+  //  Fetch employee
+  const fetchEmployees = async () => {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    setEmployees(data);
+    localStorage.setItem("employees", JSON.stringify(data));
   };
 
-  const deleteEmployee = (id) =>
-    setEmployees(employees.filter((e) => e.id !== id));
+  //  ADD Employee
+  const addEmployee = async (emp) => {
+    setEmployees((prev) => [...prev, emp]); // optimistic
 
-  const toggleStatus = (id) => {
-    setEmployees(
-      employees.map((emp) =>
-        emp.id === id
-          ? {
-              ...emp,
-              status: emp.status === "Active" ? "Inactive" : "Active",
-            }
-          : emp
-      )
-    );
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(emp),
+    });
+
+    const saved = await res.json();
+    setEmployees((prev) => prev.map((e) => (e === emp ? saved : e)));
+    localStorage.setItem("employees", JSON.stringify(employees));
   };
+
+  //  UPDATE Employee
+  const updateEmployee = async (id, emp) => {
+    setEmployees((prev) =>
+      prev.map((e) => (e.id === id ? emp : e))
+    );
+
+    await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(emp),
+    });
+
+    localStorage.setItem("employees", JSON.stringify(employees));
+  };
+
+  //  DELETE Employee
+  const deleteEmployee = async (id) => {
+    setEmployees((prev) => prev.filter((e) => e.id !== id));
+    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  };
+
+  //  TAB SYNC
+  useEffect(() => {
+    fetchEmployees();
+
+    const syncTabs = (e) => {
+      if (e.key === "employees") {
+        setEmployees(JSON.parse(e.newValue));
+      }
+    };
+
+    window.addEventListener("storage", syncTabs);
+    return () => window.removeEventListener("storage", syncTabs);
+  }, []);
 
   return (
     <EmployeeContext.Provider
@@ -45,7 +71,6 @@ export const EmployeeProvider = ({ children }) => {
         addEmployee,
         updateEmployee,
         deleteEmployee,
-        toggleStatus,
       }}
     >
       {children}

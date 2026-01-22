@@ -1,7 +1,7 @@
 import { useEmployees } from "../context/EmployeeContext";
 
 export default function Dashboard() {
-  const { employees } = useEmployees();
+  const { employees=[] } = useEmployees();
   const active = employees.filter((e) => e.status === "Active").length;
 
   return (

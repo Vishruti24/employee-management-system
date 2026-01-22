@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEmployees } from "../context/EmployeeContext";
 import { validateEmployee } from "../utils/validators";
 import Alert from "./Alert";
 
 export default function EmployeeForm({ employee, onClose }) {
-  const { addEmployee, updateEmployee, employees } = useEmployees();
+  //const { addEmployee, updateEmployee, employees } = useEmployees();
+const { addEmployee, updateEmployee, employees } = useEmployees();
 
   const [form, setForm] = useState(
     employee || {
@@ -18,27 +19,39 @@ export default function EmployeeForm({ employee, onClose }) {
     }
   );
   const [alert, setAlert] = useState(null);
-  const handleSubmit = (e) => {
+
+   useEffect(() => {
+    if (employee) {
+      setForm(employee);
+    }
+  }, [employee]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const error = validateEmployee(form, employees, employee?.id);
+    //const error = validateEmployee(form, employees, employee?.id);
+    const error = validateEmployee(form, employees || [], employee?.id);
+
     if (error) {
       setAlert({ type: "error", message: error });
       return;
     }
 
     const status = form.endDate ? "Inactive" : "Active";
+    // const payload = { ...form, status };
+
 
     if (employee) {
-      updateEmployee(employee.id, { ...form, status });
+    await  updateEmployee(employee.id, { ...form, status });
       setAlert({ type: "success", message: "Employee updated" });
     } else {
-      addEmployee({ ...form, status });
+      await addEmployee({ ...form, status });
       setAlert({ type: "success", message: "Employee added" });
     }
 
     setTimeout(onClose, 800);
   };
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">

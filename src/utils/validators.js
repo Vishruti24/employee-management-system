@@ -1,15 +1,18 @@
-export const validateEmployee = (emp, employees, editId = null) => {
-  if (!/^[a-zA-Z\s]+$/.test(emp.name))
-    return "Name must contain only latters";
 
-  if (!/\S+@\S+\.\S+/.test(emp.email))
-    return "Invalid email format";
+export const validateEmployee = (data, employees = [], editingId = null) => {
+  if (!data.name || !data.email) {
+    return "Name and Email are required";
+  }
 
   const emailExists = employees.some(
-    e => e.email === emp.email && e.id !== editId
+    (emp) =>
+      emp.email === data.email &&
+      String(emp.id) !== String(editingId) // 👈 ignore self
   );
-  if (emailExists)
-    return "Email already exists";
+
+  if (emailExists) {
+    return "Employee with this email already exists";
+  }
 
   return null;
 };

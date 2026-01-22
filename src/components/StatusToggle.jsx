@@ -1,7 +1,6 @@
-export default function StatusToggle({ status, onToggle }) {
+export default function StatusToggle({ status }) {
   return (
-    <button
-      onClick={onToggle}
+    <span
       className={`px-3 py-1 rounded-full text-sm font-medium
         ${
           status === "Active"
@@ -10,6 +9,6 @@ export default function StatusToggle({ status, onToggle }) {
         }`}
     >
       {status}
-    </button>
+    </span>
   );
 }
