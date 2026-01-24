@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const API_URL = "https://696e0052d7bacd2dd71557cd.mockapi.io/employees"; // replace
+const API_URL = "https://696e0052d7bacd2dd71557cd.mockapi.io/employees"; // API
+
+export const api=axios.create({
+  baseURL: API_URL,
+  timeout:5000,
+});
 
 export const fetchEmployees = () => axios.get(API_URL);
 

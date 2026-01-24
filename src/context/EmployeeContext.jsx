@@ -1,73 +1,106 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../api/employeeApi";
 
-const API_URL = "https://696e0052d7bacd2dd71557cd.mockapi.io/employees";
 const EmployeeContext = createContext();
 
 export const EmployeeProvider = ({ children }) => {
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   //  Fetch employee
   const fetchEmployees = async () => {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    setEmployees(data);
-    localStorage.setItem("employees", JSON.stringify(data));
+    if (!navigator.onLine) {
+      setError("No Internet Connection");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await api.get("/");
+      setEmployees(res.data);
+    } catch (err) {
+      setError("Unable to fetch employees. Server issue.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   //  ADD Employee
   const addEmployee = async (emp) => {
-    setEmployees((prev) => [...prev, emp]); // optimistic
-
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(emp),
-    });
-
-    const saved = await res.json();
-    setEmployees((prev) => prev.map((e) => (e === emp ? saved : e)));
-    localStorage.setItem("employees", JSON.stringify(employees));
+    try {
+      if (!navigator.onLine) {
+        setError("No Internet Connection");
+        return;
+      }
+      const res = await api.post("/", emp);
+      setEmployees((prev) => [...prev, res.data]); // optimistic
+    } catch {
+      setError("Failed to add Employee");
+    }
   };
 
   //  UPDATE Employee
   const updateEmployee = async (id, emp) => {
-    setEmployees((prev) =>
-      prev.map((e) => (e.id === id ? emp : e))
-    );
-
-    await fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(emp),
-    });
-
-    localStorage.setItem("employees", JSON.stringify(employees));
+    try {
+      if (!navigator.onLine) {
+        setError("No Internet Connection");
+        return;
+      }
+      await api.put(`/${id}`, emp);
+      setEmployees((prev) => prev.map((e) => (e.id === id ? emp : e)));
+    } catch {
+      setError("Update Failed");
+    }
   };
 
   //  DELETE Employee
   const deleteEmployee = async (id) => {
-    setEmployees((prev) => prev.filter((e) => e.id !== id));
-    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    try {
+      if (!navigator.onLine) {
+        setError("No Internet Connection");
+        return;
+      }
+      await api.delete(`/${id}`);
+      setEmployees((prev) => prev.filter((e) => e.id !== id));
+    } catch {
+      setError("Delete Failed");
+    }
   };
 
-  //  TAB SYNC
+  //For internet errors
   useEffect(() => {
-    fetchEmployees();
-
-    const syncTabs = (e) => {
-      if (e.key === "employees") {
-        setEmployees(JSON.parse(e.newValue));
-      }
+    const onlineHandler = () => {
+      setIsOnline(true);
+      fetchEmployees(); // refetch automatically
     };
 
-    window.addEventListener("storage", syncTabs);
-    return () => window.removeEventListener("storage", syncTabs);
+    const offlineHandler = () => {
+      setIsOnline(false);
+      setError("No Internet Connection");
+    };
+
+    window.addEventListener("online", onlineHandler);
+    window.addEventListener("offline", offlineHandler);
+
+    fetchEmployees();
+
+    return () => {
+      window.removeEventListener("online", onlineHandler);
+      window.removeEventListener("offline", offlineHandler);
+    };
   }, []);
 
   return (
     <EmployeeContext.Provider
       value={{
         employees,
+        loading,
+        error,
+        isOnline,
         addEmployee,
         updateEmployee,
         deleteEmployee,
