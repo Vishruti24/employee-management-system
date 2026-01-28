@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { EmployeeProvider } from "./context/EmployeeContext";
+//import { EmployeeProvider } from "./context/EmployeeContext";
 import Dashboard from "./pages/Dashboard";
 import Employees from "./pages/Employees";
 import Profile from "./pages/Profile";
@@ -7,7 +7,7 @@ import Layout from "./components/Layout";
 
 export default function App() {
   return (
-    <EmployeeProvider>
+   // <EmployeeProvider>
       <BrowserRouter>
         <Layout>
           <Routes>
@@ -17,6 +17,6 @@ export default function App() {
           </Routes>
         </Layout>
       </BrowserRouter>
-    </EmployeeProvider>
+   // </EmployeeProvider>
   );
 }

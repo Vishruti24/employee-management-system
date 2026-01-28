@@ -1,7 +1,11 @@
-import { useEmployees } from "../context/EmployeeContext";
+//import { useEmployees } from "../context/EmployeeContext";
+import { useSelector } from "react-redux";
+
 
 export default function Dashboard() {
-  const { employees=[] } = useEmployees();
+  //const { employees=[] } = useEmployees();
+ 
+const employees = useSelector((state) => state.employees.employees);
   const active = employees.filter((e) => e.status === "Active").length;
 
   return (

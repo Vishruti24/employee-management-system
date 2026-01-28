@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
-import { useEmployees } from "../context/EmployeeContext";
+//import { useEmployees } from "../context/EmployeeContext";
 import { validateEmployee } from "../utils/validators";
 import Alert from "./Alert";
+import { useSelector, useDispatch } from "react-redux";
+import { addEmployee, updateEmployee } from "../redux/employeeSlice";
 
 export default function EmployeeForm({ employee, onClose }) {
-const { addEmployee, updateEmployee, employees } = useEmployees();
+//const { addEmployee, updateEmployee, employees } = useEmployees();
+const dispatch = useDispatch();
+const employees = useSelector((state) => state.employees.employees);
 
   const [form, setForm] = useState(
     employee || {
@@ -37,20 +41,19 @@ const { addEmployee, updateEmployee, employees } = useEmployees();
     }
 
     const status = form.endDate ? "Inactive" : "Active";
-  
-
-
-    if (employee) {
-    await  updateEmployee(employee.id, { ...form, status });
-      setAlert({ type: "success", message: "Employee updated" });
-    } else {
-      await addEmployee({ ...form, status });
-      setAlert({ type: "success", message: "Employee added" });
+      try {
+      if (employee) {
+        await dispatch(updateEmployee({ id: employee.id, employee: { ...form, status } }));
+        setAlert({ type: "success", message: "Employee updated" });
+      } else {
+        await dispatch(addEmployee({ ...form, status }));
+        setAlert({ type: "success", message: "Employee added" });
+      }
+      setTimeout(onClose, 800);
+    } catch (err) {
+      setAlert({ type: "error", message: "Something went wrong" });
     }
-
-    setTimeout(onClose, 800);
   };
-
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
