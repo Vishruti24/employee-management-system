@@ -4,7 +4,6 @@ import { validateEmployee } from "../utils/validators";
 import Alert from "./Alert";
 
 export default function EmployeeForm({ employee, onClose }) {
-  //const { addEmployee, updateEmployee, employees } = useEmployees();
 const { addEmployee, updateEmployee, employees } = useEmployees();
 
   const [form, setForm] = useState(
@@ -29,7 +28,7 @@ const { addEmployee, updateEmployee, employees } = useEmployees();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //const error = validateEmployee(form, employees, employee?.id);
+
     const error = validateEmployee(form, employees || [], employee?.id);
 
     if (error) {
@@ -38,7 +37,7 @@ const { addEmployee, updateEmployee, employees } = useEmployees();
     }
 
     const status = form.endDate ? "Inactive" : "Active";
-    // const payload = { ...form, status };
+  
 
 
     if (employee) {

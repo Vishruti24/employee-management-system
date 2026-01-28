@@ -19,6 +19,7 @@ export default function Employees() {
   const [open, setOpen] = useState(false);
   const [editEmp, setEditEmp] = useState(null);
   const [alert, setAlert] = useState(null);
+//{undefined.someValue}
 
   if (!isOnline) {
     return <div className="error">No Internet Connection</div>;

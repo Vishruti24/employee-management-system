@@ -21,7 +21,9 @@ export const EmployeeProvider = ({ children }) => {
       setError("");
 
       const res = await api.get("/");
+     console.log(res)
       setEmployees(res.data);
+
     } catch (err) {
       setError("Unable to fetch employees. Server issue.");
     } finally {
@@ -37,7 +39,7 @@ export const EmployeeProvider = ({ children }) => {
         return;
       }
       const res = await api.post("/", emp);
-      setEmployees((prev) => [...prev, res.data]); // optimistic
+      setEmployees((prev) => [...prev, res.data]); 
     } catch {
       setError("Failed to add Employee");
     }
